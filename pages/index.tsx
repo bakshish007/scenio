@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { 
   Box, Menu, X, ArrowRight, Play, Sparkles, 
-  MessageSquare, Zap, Layers, Globe, Shield, ChevronDown, Calendar, Star
+  MessageSquare, Zap, Layers, Globe, Shield, ChevronDown, Calendar, Star,
+  MapPin, Mail, Plus
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -219,7 +220,7 @@ export default function LandingPage() {
       )}
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col justify-center pt-28 pb-16 px-4 overflow-hidden bg-[#050505]">
+      <section className="relative min-h-[100svh] md:min-h-[90vh] flex flex-col justify-center pt-24 md:pt-28 pb-10 md:pb-16 px-4 overflow-hidden bg-[#050505]">
         {/* Floating Particles */}
         <div className="absolute top-1/4 left-[15%] w-2 h-2 bg-indigo-500/30"></div>
         <div className="absolute top-1/3 right-[20%] w-2.5 h-2.5 bg-indigo-500/20"></div>
@@ -229,8 +230,8 @@ export default function LandingPage() {
         <div className="absolute bottom-10 right-1/4 w-2 h-2 bg-indigo-500/20"></div>
         <div className="absolute top-1/2 left-[5%] w-2.5 h-2.5 bg-indigo-500/40"></div>
         
-        <div className="max-w-5xl mx-auto text-center relative z-10 flex flex-col items-center">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-lg bg-[#1a1a1a] border border-[#333] text-sm font-medium text-gray-300 mb-8 hover:bg-[#222] transition-colors cursor-pointer group">
+        <div className="max-w-5xl mx-auto text-center relative z-10 flex flex-col items-center mt-8 md:mt-0">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-lg bg-[#1a1a1a] border border-[#333] text-sm font-medium text-gray-300 mb-6 md:mb-8 hover:bg-[#222] transition-colors cursor-pointer group">
             <div className="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
               <Star className="w-3 h-3 text-white" fill="white" />
             </div>
@@ -238,19 +239,19 @@ export default function LandingPage() {
             <ArrowRight className="w-3 h-3 text-gray-500 group-hover:translate-x-1 transition-transform" />
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-bold tracking-tight leading-[1.05] mb-6 w-full max-w-4xl min-h-[120px] sm:min-h-0 text-white">
+          <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-bold tracking-tight leading-[1.05] mb-4 md:mb-6 w-full max-w-4xl min-h-[100px] sm:min-h-0 text-white">
             Go from an idea to <br className="hidden sm:block" />
             <span className={`text-[#5865F2] inline-block mt-2 transition-opacity duration-500 ease-in-out ${isFading ? 'opacity-0' : 'opacity-100'}`}>
               a {dynamicWords[wordIndex]}
             </span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed font-light">
             Your creative agent.<br/>
             Built for creators and teams producing video at scale.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mt-2 md:mt-0">
             <Link href="/login" className="w-full sm:w-auto px-8 py-3.5 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-full font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#5865F2]/20">
               Start creating
               <ArrowRight className="w-4 h-4" />
@@ -361,7 +362,14 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Mobile Filter Pills */}
+          <div className="flex md:hidden items-center gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide">
+            <button className="px-5 py-2 bg-white text-black text-sm font-semibold rounded-full whitespace-nowrap">All</button>
+            <button className="px-5 py-2 bg-[#1a1a1a] text-gray-300 text-sm font-medium rounded-full border border-[#333] whitespace-nowrap">Micro Dramas</button>
+            <button className="px-5 py-2 bg-[#1a1a1a] text-gray-300 text-sm font-medium rounded-full border border-[#333] whitespace-nowrap">Product Ads</button>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {['Product Explainer', 'Social Media Ad', 'Narrative Short', 'Podcast Visualizer'].map((title, i) => (
               <div key={i} className="group cursor-pointer">
                 <div className="aspect-video bg-[#111] rounded-xl border border-white/10 mb-4 overflow-hidden relative bg-cover bg-center" style={{backgroundImage: `url(/template_${i+1}.jpg)`}}>
@@ -381,22 +389,27 @@ export default function LandingPage() {
       {/* FAQ Section */}
       <section className="py-16 sm:py-24 px-4 bg-[#0d0d0d] border-t border-white/5">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-medium mb-12 text-center">Frequently asked questions</h2>
+          <h2 className="text-3xl md:text-3xl font-bold md:font-medium mb-12 text-left md:text-center tracking-tight">Frequently asked questions</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-0 md:space-y-4 flex flex-col">
             {faqs.map((faq, index) => (
-              <div key={index} className="border border-white/10 rounded-2xl bg-[#111] overflow-hidden transition-colors hover:border-white/20">
+              <div key={index} className="border-b border-white/10 md:border md:border-white/10 md:rounded-2xl md:bg-[#111] overflow-hidden transition-colors md:hover:border-white/20 pb-2 md:pb-0">
                 <button 
-                  className="w-full flex items-center justify-between p-6 text-left"
+                  className="w-full flex items-center justify-between py-6 md:p-6 text-left"
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                 >
-                  <span className="font-medium">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${activeFaq === index ? 'rotate-180' : ''}`} />
+                  <span className="font-bold md:font-medium text-white">{faq.q}</span>
+                  {/* Desktop Chevron */}
+                  <ChevronDown className={`hidden md:block w-5 h-5 text-gray-400 transition-transform duration-300 ${activeFaq === index ? 'rotate-180' : ''}`} />
+                  {/* Mobile Plus/X */}
+                  <div className="md:hidden text-gray-400">
+                    {activeFaq === index ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                  </div>
                 </button>
                 <div 
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${activeFaq === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
                 >
-                  <p className="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
+                  <p className="px-0 md:px-6 pb-6 text-gray-400 text-sm md:text-sm leading-relaxed">
                     {faq.a}
                   </p>
                 </div>
@@ -411,18 +424,43 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 mb-16">
             <div className="sm:col-span-2 lg:col-span-2">
-              <Link href="/" className="flex items-center gap-2 mb-6">
+              <Link href="/" className="flex items-center gap-2 mb-2 md:mb-6">
                 <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
-                <span className="text-lg font-bold tracking-tight">Scenio.AI</span>
+                <span className="text-xl md:text-lg font-bold tracking-tight">Scenio.AI</span>
               </Link>
-              <p className="text-gray-400 text-sm mb-6 max-w-xs">
+              
+              {/* Desktop Text */}
+              <p className="hidden md:block text-gray-400 text-sm mb-6 max-w-xs">
                 The AI-native platform designed for storytellers to generate, edit, and orchestrate video projects.
               </p>
+
+              {/* Mobile Address & Socials */}
+              <div className="md:hidden">
+                <p className="text-gray-400 text-sm mb-6">
+                  The AI-native platform designed for storytellers to generate, edit, and orchestrate video projects.
+                </p>
+                <div className="flex items-start gap-3 text-gray-400 text-sm mb-8 font-light">
+                  <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+                  <p>1209 Orange St, City of Wilmington,<br/>County of New Castle, Delaware 19801</p>
+                </div>
+                <div className="flex items-center gap-6 text-white font-medium mb-12 text-sm">
+                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                      <rect x="2" y="9" width="4" height="12"></rect>
+                      <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                    LinkedIn
+                  </Link>
+                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300"><MessageSquare className="w-5 h-5"/> Discord</Link>
+                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300"><Mail className="w-5 h-5"/> Mail Us</Link>
+                </div>
+              </div>
             </div>
             
-            <div>
-              <h4 className="font-semibold mb-4 text-sm">Product</h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+            <div className="mt-8 md:mt-0">
+              <h4 className="font-bold text-lg md:font-semibold mb-6 md:mb-4 md:text-sm text-white">Product</h4>
+              <ul className="space-y-5 md:space-y-3 text-sm md:text-sm text-gray-400">
                 <li><Link href="#" className="hover:text-white transition-colors">Features</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Pricing</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Templates</Link></li>
@@ -430,9 +468,9 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold mb-4 text-sm">Resources</h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+            <div className="mt-8 md:mt-0">
+              <h4 className="font-bold text-lg md:font-semibold mb-6 md:mb-4 md:text-sm text-white">Resources</h4>
+              <ul className="space-y-5 md:space-y-3 text-sm md:text-sm text-gray-400">
                 <li><Link href="#" className="hover:text-white transition-colors">Documentation</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Blog</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Community</Link></li>
@@ -440,9 +478,9 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold mb-4 text-sm">Company</h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+            <div className="mt-8 md:mt-0">
+              <h4 className="font-bold text-lg md:font-semibold mb-6 md:mb-4 md:text-sm text-white">Company</h4>
+              <ul className="space-y-5 md:space-y-3 text-sm md:text-sm text-gray-400">
                 <li><Link href="#" className="hover:text-white transition-colors">About</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
