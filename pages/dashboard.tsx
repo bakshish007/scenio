@@ -1,6 +1,9 @@
 import Layout from '../components/Layout';
 import { Tv, Languages, Mic, Megaphone, Plus, ArrowUp } from 'lucide-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const skills = [
   { name: 'Script to Video', icon: Tv },
@@ -10,11 +13,32 @@ const skills = [
 ];
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace('/login');
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!session) return null;
+
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 sm:px-6 w-full max-w-4xl mx-auto py-4 sm:py-6">
         <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-3xl sm:text-4xl font-serif mb-2 sm:mb-3 tracking-tight">What are we making today?</h2>
+          <h2 className="text-3xl sm:text-4xl font-serif mb-2 sm:mb-3 tracking-tight">
+            What are we making today{session.user?.name ? `, ${session.user.name.split(' ')[0]}` : ''}?
+          </h2>
           <p className="text-sm sm:text-base text-gray-400">Pick a Skill, or describe what you want to make.</p>
         </div>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Home, Folder, LayoutGrid, Wand2, Zap, ChevronRight, Box, X } from 'lucide-react';
+import { Home, Folder, LayoutGrid, Wand2, Zap, ChevronRight, Box, X, LogOut, User } from 'lucide-react';
 import { useRouter } from 'next/router';
+import { useSession, signOut } from 'next-auth/react';
 
 const navItems = [
   { name: 'Home', icon: Home, href: '/dashboard' },
@@ -17,6 +18,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
     <aside 
@@ -66,11 +68,37 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </button>
 
         {/* Recent Section */}
-        <div className="mt-8 px-3">
+        <div className="mt-8 px-3 flex-1">
           <h3 className="text-xs font-semibold text-gray-500 tracking-wider mb-3">RECENT</h3>
           <p className="text-sm text-gray-500">No projects yet</p>
         </div>
       </nav>
+
+      {/* User Profile */}
+      {session && session.user && (
+        <div className="p-4 border-t border-[#222222]">
+          <div className="flex items-center gap-3">
+            {session.user.image ? (
+              <img src={session.user.image} alt={session.user.name || "User"} className="w-9 h-9 rounded-full object-cover border border-white/10" />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center border border-white/10">
+                <User className="w-5 h-5 text-white" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">{session.user.name || "User"}</p>
+              <p className="text-xs text-gray-400 truncate">{session.user.email}</p>
+            </div>
+            <button 
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+              title="Sign Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
