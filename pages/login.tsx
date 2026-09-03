@@ -127,21 +127,34 @@ export default function Login() {
               </button>
             </>
           ) : (
-            <>
-              <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mb-6 shadow-md">
-                <CheckCircle2 className="w-6 h-6 text-green-400" />
+            <div className="flex flex-col items-center w-full transform transition-all duration-500 opacity-100 translate-y-0">
+              <div className="relative mb-10">
+                <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-2xl animate-pulse"></div>
+                <div className="relative w-20 h-20 bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border border-[#333] rounded-[1.5rem] flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <Mail className="w-8 h-8 text-indigo-400" />
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#050505] rounded-full flex items-center justify-center border-4 border-[#050505]">
+                    <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  </div>
+                </div>
               </div>
-              <h1 className="text-3xl font-serif tracking-tight mb-4">Check your email</h1>
-              <p className="text-gray-400 text-sm mb-8 text-center max-w-[280px]">
-                We sent a magic link to <strong>{email}</strong>. Click the link to securely sign in.
+              
+              <h1 className="text-3xl font-serif tracking-tight mb-3 text-white">Check your inbox</h1>
+              <p className="text-gray-400 text-sm mb-6 text-center max-w-[280px] leading-relaxed">
+                We sent a magic link to securely sign you in. Click the link in the email sent to:
               </p>
+              
+              <div className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 mb-10 w-full max-w-[280px] flex items-center justify-center shadow-inner">
+                <p className="text-indigo-300 font-semibold truncate text-sm tracking-wide">{email}</p>
+              </div>
+
               <button 
                 onClick={() => setView('main')}
-                className="text-sm font-medium text-indigo-500 hover:text-indigo-400"
+                className="group flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-white transition-colors mb-4"
               >
+                <span className="group-hover:-translate-x-1 transition-transform inline-block">←</span>
                 Back to sign in
               </button>
-            </>
+            </div>
           )}
 
           <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">
