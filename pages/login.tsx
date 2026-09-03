@@ -156,7 +156,7 @@ export default function Login() {
                 Don't have an account? Sign up
               </button>
             </div>
-          ) : (
+          ) : view === 'credentials' ? (
             <div className="w-full animate-in slide-in-from-right-4 fade-in duration-300">
               <h1 className="text-3xl font-serif tracking-tight mb-2">
                 {isRegistering ? 'Create Account' : 'Welcome Back'}
