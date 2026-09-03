@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Bug, Bell, Star, Menu } from 'lucide-react';
+import { Bug, Bell, Star, Menu, User } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 interface TopbarProps {
   transparent?: boolean;
@@ -9,6 +10,16 @@ interface TopbarProps {
 }
 
 export default function Topbar({ transparent = false, title, onMenuClick, showMenuButton = false }: TopbarProps) {
+  const { data: session } = useSession();
+  
+  const hour = new Date().getHours();
+  let greeting = 'Good evening';
+  if (hour < 12) greeting = 'Good morning';
+  else if (hour < 18) greeting = 'Good afternoon';
+
+  const userFirstName = session?.user?.name ? session.user.name.split(' ')[0] : 'Guest';
+  const userInitials = session?.user?.name ? session.user.name.charAt(0).toUpperCase() : 'U';
+
   return (
     <header 
       className={`h-16 flex items-center justify-between px-4 sm:px-6 transition-colors shrink-0 ${
@@ -36,7 +47,7 @@ export default function Topbar({ transparent = false, title, onMenuClick, showMe
            </nav>
         ) : (
           <h1 className="text-sm font-medium text-gray-200 truncate pr-2">
-            {title || 'Good afternoon, Nitesh'}
+            {title || `${greeting}, ${userFirstName}`}
           </h1>
         )}
       </div>
@@ -62,12 +73,26 @@ export default function Topbar({ transparent = false, title, onMenuClick, showMe
           <div className="w-1.5 h-1.5 bg-red-500 rounded-full ml-1 shrink-0"></div>
         </div>
 
-        <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity ml-1 sm:ml-2">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
-            N
+        {session?.user && !transparent ? (
+          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity ml-1 sm:ml-2">
+            {session.user.image ? (
+              <img src={session.user.image} alt={session.user.name || "User"} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-white/10 shrink-0" />
+            ) : (
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white shrink-0 border border-white/10">
+                {userInitials}
+              </div>
+            )}
+            <span className="text-sm font-medium hidden md:block whitespace-nowrap">
+              {session.user.name || session.user.email?.split('@')[0]}
+            </span>
           </div>
-          <span className="text-sm font-medium hidden md:block whitespace-nowrap">Nitesh Kumar</span>
-        </div>
+        ) : !transparent ? (
+          <div className="flex items-center gap-2 cursor-pointer ml-1 sm:ml-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#1f1f1f] flex items-center justify-center border border-white/10 shrink-0">
+              <User className="w-4 h-4 text-gray-400" />
+            </div>
+          </div>
+        ) : null}
       </div>
     </header>
   );
