@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
@@ -11,9 +12,41 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID || "mock_google_id",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "mock_google_secret",
     }),
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "you@example.com" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email }
+        });
+
+        if (!user) {
+          throw new Error("No user found with this email");
+        }
+
+        if (!user.password) {
+          throw new Error("Please log in with the provider you originally used (e.g. Google)");
+        }
+
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email address before logging in");
+        }
+
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        return { id: user.id, name: user.name, email: user.email, image: user.image };
+      }
     }),
   ],
   session: {

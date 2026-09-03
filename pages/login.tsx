@@ -2,43 +2,87 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Box, X, Mail, CheckCircle2 } from 'lucide-react';
+import { X, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 
 export default function Login() {
   const router = useRouter();
-  const [view, setView] = useState<'main' | 'email' | 'check-email'>('main');
+  const [view, setView] = useState<'main' | 'credentials' | 'verify-email'>('main');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
+  
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [error, setError] = useState('');
 
   const handleOAuthSignIn = async (provider: string) => {
     setIsLoading(provider);
     await signIn(provider, { callbackUrl: '/dashboard' });
   };
 
-  const handleEmailSignIn = async (e: React.FormEvent) => {
+  const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !password) return;
     
-    setIsLoading('email');
-    await signIn('email', { email, redirect: false, callbackUrl: '/dashboard' });
-    setIsLoading(null);
-    setView('check-email');
+    setIsLoading('credentials');
+    setError('');
+
+    try {
+      if (isRegistering) {
+        // Handle Registration
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, name }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Registration failed');
+        }
+
+        // Switch to check email view instead of auto-logging in
+        setView('verify-email');
+        setIsLoading(null);
+      } else {
+        // Handle Sign In
+        const res = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (res?.error) {
+          throw new Error(res.error);
+        }
+
+        router.push('/dashboard');
+      }
+    } catch (err: any) {
+      setError(err.message || 'An error occurred');
+      setIsLoading(null);
+    }
   };
+
+  // Check URL for verification success
+  const isVerified = router.query.verified === 'true';
 
   return (
     <div className="flex min-h-screen bg-[#050505] text-white font-sans overflow-hidden">
       <Head>
-        <title>Sign in - Scenio.AI</title>
+        <title>{isRegistering ? 'Create Account' : 'Sign In'} - Scenio.AI</title>
       </Head>
 
-      {/* Left side - Background Image (Hidden on mobile) */}
+      {/* Left side - Background Image */}
       <div className="hidden md:block md:w-1/2 relative bg-[#111]">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url(/login-bg.jpg)' }}
         />
-        {/* Logo over image */}
         <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
           <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
           <span className="text-xl font-bold tracking-tight drop-shadow-md">Scenio.AI</span>
@@ -47,6 +91,7 @@ export default function Login() {
 
       {/* Right side - Login Form */}
       <div className="w-full md:w-1/2 relative flex flex-col items-center justify-center p-8 bg-[#050505]">
+        
         {/* Mobile Logo */}
         <div className="md:hidden absolute top-6 left-6 z-10 flex items-center gap-2">
           <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
@@ -61,11 +106,10 @@ export default function Login() {
           <X className="w-5 h-5" />
         </button>
 
-        {/* Form Container */}
         <div className="w-full max-w-sm flex flex-col items-center text-center">
           
           {view === 'main' ? (
-            <>
+            <div className="animate-in fade-in zoom-in duration-300">
               <h1 className="text-3xl font-serif tracking-tight mb-2">Your story is just a<br/>login away</h1>
               <p className="text-gray-400 text-sm mb-10">Create an account or sign in to continue</p>
               
@@ -85,62 +129,143 @@ export default function Login() {
                 </button>
               </div>
 
-              <button 
-                onClick={() => setView('email')}
-                className="text-sm font-medium text-indigo-500 hover:text-indigo-400 mb-12"
-              >
-                Continue with email
-              </button>
-            </>
-          ) : view === 'email' ? (
-            <>
-              <div className="w-12 h-12 bg-[#1a1a1a] rounded-full flex items-center justify-center mb-6 shadow-md">
-                <Mail className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-4 w-full mb-6">
+                <div className="h-px bg-[#333] flex-1"></div>
+                <span className="text-xs text-gray-500 font-medium">OR</span>
+                <div className="h-px bg-[#333] flex-1"></div>
               </div>
-              <h1 className="text-3xl font-serif tracking-tight mb-8">Enter your email</h1>
+
+              <button 
+                onClick={() => {
+                  setIsRegistering(false);
+                  setView('credentials');
+                }}
+                className="w-full flex items-center justify-center gap-3 bg-[#111] border border-[#333] hover:bg-[#1a1a1a] text-white font-semibold py-3.5 px-4 rounded-xl transition-colors mb-4"
+              >
+                <Mail className="w-5 h-5 text-gray-400" />
+                Sign in with Email
+              </button>
               
-              <form onSubmit={handleEmailSignIn} className="w-full space-y-4 mb-6">
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="w-full bg-black border border-[#333] focus:border-indigo-500 rounded-xl px-4 py-3.5 text-sm outline-none transition-colors"
-                  required
-                  autoFocus
-                />
+              <button 
+                onClick={() => {
+                  setIsRegistering(true);
+                  setView('credentials');
+                }}
+                className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors mb-12"
+              >
+                Don't have an account? Sign up
+              </button>
+            </div>
+          ) : (
+            <div className="w-full animate-in slide-in-from-right-4 fade-in duration-300">
+              <h1 className="text-3xl font-serif tracking-tight mb-2">
+                {isRegistering ? 'Create Account' : 'Welcome Back'}
+              </h1>
+              <p className="text-gray-400 text-sm mb-8">
+                {isRegistering ? 'Enter your details to get started' : 'Enter your credentials to access your account'}
+              </p>
+              
+              <form onSubmit={handleCredentialsSubmit} className="w-full space-y-4 mb-6">
+                
+                {isVerified && (
+                  <div className="bg-green-500/10 border border-green-500/20 text-green-400 text-sm p-3 rounded-lg text-left mb-4">
+                    Email verified successfully! You can now sign in.
+                  </div>
+                )}
+                
+                {isRegistering && (
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <UserIcon className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <input 
+                      type="text" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Full Name (Optional)"
+                      className="w-full bg-black border border-[#333] focus:border-indigo-500 rounded-xl pl-11 pr-4 py-3.5 text-sm outline-none transition-colors"
+                    />
+                  </div>
+                )}
+
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email address"
+                    className="w-full bg-black border border-[#333] focus:border-indigo-500 rounded-xl pl-11 pr-4 py-3.5 text-sm outline-none transition-colors"
+                    required
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    minLength={6}
+                    className="w-full bg-black border border-[#333] focus:border-indigo-500 rounded-xl pl-11 pr-4 py-3.5 text-sm outline-none transition-colors"
+                    required
+                  />
+                </div>
+
+                {error && (
+                  <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm p-3 rounded-lg text-left">
+                    {error}
+                  </div>
+                )}
+
                 <button 
                   type="submit"
-                  disabled={isLoading !== null || !email}
-                  className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-black font-semibold py-3.5 px-4 rounded-xl transition-colors disabled:opacity-50"
+                  disabled={isLoading !== null || !email || !password}
+                  className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-black font-semibold py-3.5 px-4 rounded-xl transition-colors disabled:opacity-50 mt-2"
                 >
-                  <Mail className="w-4 h-4" />
-                  {isLoading === 'email' ? 'Sending link...' : 'Continue with Email'}
+                  {isLoading === 'credentials' ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : null}
+                  {isRegistering ? 'Create Account' : 'Sign In'}
                 </button>
               </form>
 
-              <button 
-                onClick={() => setView('main')}
-                className="text-sm font-medium text-indigo-500 hover:text-indigo-400 mb-12"
-              >
-                Back to sign in
-              </button>
-            </>
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => {
+                    setIsRegistering(!isRegistering);
+                    setError('');
+                  }}
+                  className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                >
+                  {isRegistering ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+                </button>
+
+                <button 
+                  onClick={() => setView('main')}
+                  className="text-sm font-medium text-indigo-500 hover:text-indigo-400 transition-colors"
+                >
+                  Back to main menu
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="flex flex-col items-center w-full transform transition-all duration-500 opacity-100 translate-y-0">
               <div className="relative mb-10">
                 <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-2xl animate-pulse"></div>
                 <div className="relative w-20 h-20 bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] border border-[#333] rounded-[1.5rem] flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
                   <Mail className="w-8 h-8 text-indigo-400" />
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#050505] rounded-full flex items-center justify-center border-4 border-[#050505]">
-                    <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  </div>
                 </div>
               </div>
               
-              <h1 className="text-3xl font-serif tracking-tight mb-3 text-white">Check your inbox</h1>
+              <h1 className="text-3xl font-serif tracking-tight mb-3 text-white">Verify your email</h1>
               <p className="text-gray-400 text-sm mb-6 text-center max-w-[280px] leading-relaxed">
-                We sent a magic link to securely sign you in. Click the link in the email sent to:
+                We sent a verification link to securely activate your account. Please check your inbox:
               </p>
               
               <div className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 mb-10 w-full max-w-[280px] flex items-center justify-center shadow-inner">
@@ -148,7 +273,7 @@ export default function Login() {
               </div>
 
               <button 
-                onClick={() => setView('main')}
+                onClick={() => setView('credentials')}
                 className="group flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-white transition-colors mb-4"
               >
                 <span className="group-hover:-translate-x-1 transition-transform inline-block">←</span>
@@ -157,11 +282,11 @@ export default function Login() {
             </div>
           )}
 
-          <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">
+          <p className="text-xs text-gray-600 max-w-[250px] leading-relaxed mt-12">
             By continuing, you agree to our{' '}
-            <Link href="#" className="text-gray-300 underline underline-offset-2">Terms of service</Link>
+            <Link href="#" className="text-gray-400 hover:text-gray-300 underline underline-offset-2">Terms of service</Link>
             {' '}and{' '}
-            <Link href="#" className="text-gray-300 underline underline-offset-2">Privacy policy</Link>.
+            <Link href="#" className="text-gray-400 hover:text-gray-300 underline underline-offset-2">Privacy policy</Link>.
           </p>
         </div>
       </div>
