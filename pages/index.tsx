@@ -53,7 +53,7 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 w-full z-50 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <img src="/scenio.png" alt="Scenio Logo" className="w-14 h-14 object-contain" />
+            <img src="/scenio.png" alt="Scenio Logo" className="w-10 h-10 object-contain" />
             <span className="text-xl font-bold tracking-tight">Scenio.AI</span>
           </Link>
           
@@ -412,7 +412,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 mb-16">
             <div className="sm:col-span-2 lg:col-span-2">
               <Link href="/" className="flex items-center gap-2 mb-6">
-                <img src="/scenio.png" alt="Scenio Logo" className="w-12 h-12 object-contain" />
+                <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
                 <span className="text-lg font-bold tracking-tight">Scenio.AI</span>
               </Link>
               <p className="text-gray-400 text-sm mb-6 max-w-xs">
