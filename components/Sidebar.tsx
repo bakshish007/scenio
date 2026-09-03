@@ -27,7 +27,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       {/* Logo */}
       <div className="h-16 flex items-center px-6 shrink-0">
         <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={onClose}>
-          <img src="/scenio.png" alt="Scenio Logo" className="w-10 h-10 object-contain" />
+          <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
           <span className="text-xl font-semibold tracking-tight">Scenio.AI</span>
         </Link>
         <button className="ml-auto text-gray-500 hover:text-white transition-colors hidden md:block">

@@ -22,7 +22,7 @@ export default function Login() {
         />
         {/* Logo over image */}
         <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
-          <img src="/scenio.png" alt="Scenio Logo" className="w-10 h-10 object-contain" />
+          <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
           <span className="text-xl font-bold tracking-tight drop-shadow-md">Scenio.AI</span>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function Login() {
       <div className="w-full md:w-1/2 relative flex flex-col items-center justify-center p-8 bg-[#050505]">
         {/* Mobile Logo */}
         <div className="md:hidden absolute top-6 left-6 z-10 flex items-center gap-2">
-          <img src="/scenio.png" alt="Scenio Logo" className="w-10 h-10 object-contain" />
+          <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
           <span className="text-xl font-bold tracking-tight">Scenio.AI</span>
         </div>
 

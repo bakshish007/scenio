@@ -1,19 +1,20 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { 
-  Box, Menu, X, ArrowRight, Play, Sparkles, 
+import {
+  Box, Menu, X, ArrowRight, Play, Sparkles,
   MessageSquare, Zap, Layers, Globe, Shield, ChevronDown, Calendar, Star,
   MapPin, Mail, Plus
 } from 'lucide-react';
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mobileActiveMenu, setMobileActiveMenu] = useState<string | null>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
   // Dynamic Word State
-  const dynamicWords = ['social reel', 'short film', 'product explainer', 'marketing campaign'];
+  const dynamicWords = ['social reel', 'short film', 'product video', 'marketing ad'];
   const [wordIndex, setWordIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
@@ -54,10 +55,10 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 w-full z-50 bg-[#050505]/60 backdrop-blur-xl border-b border-white/5 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <img src="/scenio.png" alt="Scenio Logo" className="w-10 h-10 object-contain" />
+            <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
             <span className="text-xl font-bold tracking-tight">Scenio.AI</span>
           </Link>
-          
+
           <nav className="hidden md:flex items-center gap-8 relative">
             {/* Products Mega Menu */}
             <div className="group">
@@ -68,7 +69,7 @@ export default function LandingPage() {
                   <div className="w-1/3 pr-8 border-r border-[#333]">
                     <h3 className="text-sm font-bold tracking-wider mb-2">PRODUCTS</h3>
                     <p className="text-sm text-gray-400 mb-8 leading-relaxed">Every tool in the studio, from script to finished cut.</p>
-                    <div className="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden mb-4 bg-cover bg-center" style={{backgroundImage: 'url(/menu_featured.jpg)'}}></div>
+                    <div className="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden mb-4 bg-cover bg-center" style={{ backgroundImage: 'url(/menu_featured.jpg)' }}></div>
                     <h4 className="font-bold text-sm mb-1">Fast Lane to Production</h4>
                     <p className="text-xs text-gray-400">Start with our Artist</p>
                   </div>
@@ -117,7 +118,7 @@ export default function LandingPage() {
                   <div className="w-[28%] pr-8 border-r border-[#333]">
                     <h3 className="text-sm font-bold tracking-wider mb-2">USE CASES</h3>
                     <p className="text-sm text-gray-400 mb-8 leading-relaxed">Built around the work you already make.</p>
-                    <div className="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden mb-4 bg-cover bg-center" style={{backgroundImage: 'url(/login-bg.jpg)'}}></div>
+                    <div className="aspect-video bg-[#1a1a1a] rounded-xl overflow-hidden mb-4 bg-cover bg-center" style={{ backgroundImage: 'url(/login-bg.jpg)' }}></div>
                     <h4 className="font-bold text-sm mb-1">Fast Lane to Production</h4>
                     <p className="text-xs text-gray-400">Start with our Artist</p>
                   </div>
@@ -175,7 +176,7 @@ export default function LandingPage() {
                   <div className="w-[60%] pr-8 border-r border-[#333]">
                     <h3 className="text-sm font-bold tracking-wider mb-2">RESOURCES</h3>
                     <p className="text-sm text-gray-400 mb-8 leading-relaxed">Templates and writing to start from.</p>
-                    <div className="w-full aspect-[4/3] bg-[#1a1a1a] rounded-xl overflow-hidden mb-4 bg-cover bg-center border border-[#333]" style={{backgroundImage: 'url(/trophy_no_text.jpg)'}}></div>
+                    <div className="w-full aspect-[4/3] bg-[#1a1a1a] rounded-xl overflow-hidden mb-4 bg-cover bg-center border border-[#333]" style={{ backgroundImage: 'url(/trophy_no_text.jpg)' }}></div>
                     <h4 className="font-bold text-sm mb-1">Scenio ranks #1 on Physion-Arc</h4>
                     <p className="text-xs text-gray-400">Independently evaluated against seven other agents.</p>
                   </div>
@@ -199,28 +200,92 @@ export default function LandingPage() {
             <Link href="/login" className="text-sm font-medium bg-white text-black px-7 py-2 rounded-[10px] hover:bg-gray-100 transition-colors">Sign in</Link>
           </div>
 
-          <button className="md:hidden text-white p-1" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex md:hidden items-center gap-3">
+            <Link href="/login" className="text-xs font-semibold bg-white text-black px-4 py-1.5 rounded-lg hover:bg-gray-200 transition-colors">Log In</Link>
+            <button className="text-white p-1" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#0a0a0a] pt-24 px-6 flex flex-col gap-6 md:hidden">
-          <Link href="#" className="text-2xl font-semibold border-b border-white/10 pb-4">Features</Link>
-          <Link href="#" className="text-2xl font-semibold border-b border-white/10 pb-4">Use Cases</Link>
-          <Link href="#" className="text-2xl font-semibold border-b border-white/10 pb-4">Pricing</Link>
-          <Link href="#" className="text-2xl font-semibold border-b border-white/10 pb-4">Request API</Link>
-          <div className="mt-auto pb-12 flex flex-col gap-4">
+      <div
+        className={`fixed inset-0 z-40 bg-[#0a0a0a] pt-24 px-6 flex flex-col md:hidden transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="flex-1 overflow-y-auto pb-24 scrollbar-hide flex flex-col gap-2">
+          {/* Products Accordion */}
+          <div className="border-b border-white/10">
+            <button
+              className="w-full flex items-center justify-between py-4 text-base font-semibold text-left"
+              onClick={() => setMobileActiveMenu(mobileActiveMenu === 'products' ? null : 'products')}
+            >
+              Products
+              <ChevronDown className={`w-5 h-5 transition-transform ${mobileActiveMenu === 'products' ? 'rotate-180' : ''}`} />
+            </button>
+            <div className={`overflow-hidden transition-all duration-300 ${mobileActiveMenu === 'products' ? 'max-h-[500px] mb-4' : 'max-h-0'}`}>
+              <div className="flex flex-col gap-4 pl-4 text-gray-300">
+                <div className="text-xs font-bold text-gray-500 tracking-wider mt-2">AI VIDEO GENERATOR</div>
+                <Link href="#" className="py-1">Script to Video Maker</Link>
+                <Link href="#" className="py-1">Story to Video Maker</Link>
+                <Link href="#" className="py-1">Video Clip Generator</Link>
+                <div className="text-xs font-bold text-gray-500 tracking-wider mt-2">AI VIDEO EDITOR</div>
+                <Link href="#" className="py-1">Voiceover</Link>
+                <Link href="#" className="py-1">Face Swap</Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Use Cases Accordion */}
+          <div className="border-b border-white/10">
+            <button
+              className="w-full flex items-center justify-between py-4 text-base font-semibold text-left"
+              onClick={() => setMobileActiveMenu(mobileActiveMenu === 'usecases' ? null : 'usecases')}
+            >
+              Use Cases
+              <ChevronDown className={`w-5 h-5 transition-transform ${mobileActiveMenu === 'usecases' ? 'rotate-180' : ''}`} />
+            </button>
+            <div className={`overflow-hidden transition-all duration-300 ${mobileActiveMenu === 'usecases' ? 'max-h-[800px] mb-4' : 'max-h-0'}`}>
+              <div className="flex flex-col gap-4 pl-4 text-gray-300">
+                <div className="text-xs font-bold text-gray-500 tracking-wider mt-2">STORYTELLERS</div>
+                <Link href="#" className="py-1">Book to Audiobook</Link>
+                <Link href="#" className="py-1">Podcast Video Maker</Link>
+                <div className="text-xs font-bold text-gray-500 tracking-wider mt-2">SOCIAL MEDIA CREATORS</div>
+                <Link href="#" className="py-1">YouTube Short Generator</Link>
+                <Link href="#" className="py-1">Instagram Video Maker</Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Resources Accordion */}
+          <div className="border-b border-white/10">
+            <button
+              className="w-full flex items-center justify-between py-4 text-base font-semibold text-left"
+              onClick={() => setMobileActiveMenu(mobileActiveMenu === 'resources' ? null : 'resources')}
+            >
+              Resources
+              <ChevronDown className={`w-5 h-5 transition-transform ${mobileActiveMenu === 'resources' ? 'rotate-180' : ''}`} />
+            </button>
+            <div className={`overflow-hidden transition-all duration-300 ${mobileActiveMenu === 'resources' ? 'max-h-[300px] mb-4' : 'max-h-0'}`}>
+              <div className="flex flex-col gap-4 pl-4 text-gray-300">
+                <Link href="#" className="py-1">Templates</Link>
+                <Link href="#" className="py-1">Blogs</Link>
+              </div>
+            </div>
+          </div>
+
+          <Link href="#" className="py-4 text-base font-semibold border-b border-white/10">Pricing</Link>
+          <Link href="#" className="py-4 text-base font-semibold border-b border-white/10">User Guide</Link>
+
+          <div className="mt-8 flex flex-col gap-4">
+            <Link href="/login" className="text-center py-4 rounded-xl bg-white text-black font-semibold shadow-lg">Sign In / Log In</Link>
             <Link href="#" className="text-center py-4 rounded-xl border border-white/20 font-medium">Book a demo</Link>
-            <Link href="/login" className="text-center py-4 rounded-xl bg-white text-black font-medium">Sign In</Link>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[100svh] md:min-h-[90vh] flex flex-col justify-center pt-24 md:pt-28 pb-10 md:pb-16 px-4 overflow-hidden bg-[#050505]">
+      <section className="relative min-h-0 md:min-h-[90vh] flex flex-col justify-start md:justify-center pt-32 md:pt-28 pb-12 md:pb-16 px-4 overflow-hidden bg-[#050505]">
         {/* Floating Particles */}
         <div className="absolute top-1/4 left-[15%] w-2 h-2 bg-indigo-500/30"></div>
         <div className="absolute top-1/3 right-[20%] w-2.5 h-2.5 bg-indigo-500/20"></div>
@@ -229,8 +294,8 @@ export default function LandingPage() {
         <div className="absolute top-20 right-[5%] w-2 h-2 bg-indigo-500/30"></div>
         <div className="absolute bottom-10 right-1/4 w-2 h-2 bg-indigo-500/20"></div>
         <div className="absolute top-1/2 left-[5%] w-2.5 h-2.5 bg-indigo-500/40"></div>
-        
-        <div className="max-w-5xl mx-auto text-center relative z-10 flex flex-col items-center mt-8 md:mt-0">
+
+        <div className="max-w-5xl mx-auto text-center relative z-10 flex flex-col items-center">
           <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-lg bg-[#1a1a1a] border border-[#333] text-sm font-medium text-gray-300 mb-6 md:mb-8 hover:bg-[#222] transition-colors cursor-pointer group">
             <div className="w-5 h-5 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
               <Star className="w-3 h-3 text-white" fill="white" />
@@ -247,7 +312,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed font-light">
-            Your creative agent.<br/>
+            Your creative agent.<br />
             Built for creators and teams producing video at scale.
           </p>
 
@@ -265,13 +330,13 @@ export default function LandingPage() {
       </section>
 
       {/* Showcase Section */}
-      <section className="py-16 sm:py-24 px-4 border-t border-white/5 bg-[#0d0d0d]">
+      <section className="pt-12 pb-16 sm:py-24 px-4 border-t border-white/5 bg-[#0d0d0d]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-medium mb-12 text-center">Made with Scenio</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="group relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/5 cursor-pointer bg-cover bg-center" style={{backgroundImage: `url(/showcase_${i}.jpg)`}}>
+              <div key={i} className="group relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/5 cursor-pointer bg-cover bg-center" style={{ backgroundImage: `url(/showcase_${i}.jpg)` }}>
                 {/* Overlay for text */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700"></div>
                 <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -304,7 +369,7 @@ export default function LandingPage() {
               <h3 className="text-2xl font-medium mb-3">End-to-end creation</h3>
               <p className="text-gray-400 text-sm max-w-md leading-relaxed">Go from script to storyboard, to final render without leaving the platform. Our timeline seamlessly integrates generated assets.</p>
             </div>
-            
+
             <div className="bg-[#111] border border-white/5 rounded-3xl p-6 sm:p-8 hover:bg-[#151515] transition-colors">
               <MessageSquare className="w-8 h-8 text-pink-400 mb-6" />
               <h3 className="text-2xl font-medium mb-3">Chat-native canvas</h3>
@@ -318,7 +383,7 @@ export default function LandingPage() {
             </div>
 
             <div className="bg-[#111] border border-white/5 rounded-3xl p-6 sm:p-8 hover:bg-[#151515] transition-colors lg:col-span-2 relative overflow-hidden">
-               <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 blur-[80px] rounded-full pointer-events-none"></div>
               <Shield className="w-8 h-8 text-purple-400 mb-6" />
               <h3 className="text-2xl font-medium mb-3">Enterprise-grade control</h3>
               <p className="text-gray-400 text-sm max-w-md leading-relaxed">Brand kits, custom model fine-tuning, and robust access controls ensure your content stays on-brand and secure.</p>
@@ -330,19 +395,19 @@ export default function LandingPage() {
       {/* Models Marquee */}
       <section className="py-16 sm:py-24 border-y border-white/5 bg-white/[0.02] overflow-hidden flex flex-col items-center">
         <h3 className="text-sm font-medium text-gray-500 uppercase tracking-widest mb-10 text-center">We support all the frontier models</h3>
-        
+
         <div className="w-full relative flex overflow-hidden mask-edges">
           {/* mask-edges would typically use a transparent gradient mask in css, simulating it: */}
           <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none"></div>
-          
-          <div className="flex w-[200%] animate-marquee whitespace-nowrap opacity-50">
+
+          <div className="flex w-max animate-marquee whitespace-nowrap opacity-50">
             {/* First set */}
-            <div className="flex items-center justify-around w-1/2 shrink-0 px-4 text-2xl font-bold text-gray-400 gap-20">
+            <div className="flex items-center px-4 text-xl sm:text-2xl font-bold text-gray-400 gap-10 sm:gap-20 pr-10 sm:pr-20">
               <span>OpenAI</span> <span>Runway Gen-3</span> <span>Pika Labs</span> <span>Kling</span> <span>Luma Dream Machine</span> <span>ElevenLabs</span>
             </div>
             {/* Duplicate set for seamless loop */}
-            <div className="flex items-center justify-around w-1/2 shrink-0 px-4 text-2xl font-bold text-gray-400 gap-20">
+            <div className="flex items-center px-4 text-xl sm:text-2xl font-bold text-gray-400 gap-10 sm:gap-20 pr-10 sm:pr-20">
               <span>OpenAI</span> <span>Runway Gen-3</span> <span>Pika Labs</span> <span>Kling</span> <span>Luma Dream Machine</span> <span>ElevenLabs</span>
             </div>
           </div>
@@ -372,7 +437,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {['Product Explainer', 'Social Media Ad', 'Narrative Short', 'Podcast Visualizer'].map((title, i) => (
               <div key={i} className="group cursor-pointer">
-                <div className="aspect-video bg-[#111] rounded-xl border border-white/10 mb-4 overflow-hidden relative bg-cover bg-center" style={{backgroundImage: `url(/template_${i+1}.jpg)`}}>
+                <div className="aspect-video bg-[#111] rounded-xl border border-white/10 mb-4 overflow-hidden relative bg-cover bg-center" style={{ backgroundImage: `url(/template_${i + 1}.jpg)` }}>
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                   <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/50 backdrop-blur-md rounded text-[10px] font-medium text-white border border-white/10">
                     0:15
@@ -390,11 +455,11 @@ export default function LandingPage() {
       <section className="py-16 sm:py-24 px-4 bg-[#0d0d0d] border-t border-white/5">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-3xl font-bold md:font-medium mb-12 text-left md:text-center tracking-tight">Frequently asked questions</h2>
-          
+
           <div className="space-y-0 md:space-y-4 flex flex-col">
             {faqs.map((faq, index) => (
               <div key={index} className="border-b border-white/10 md:border md:border-white/10 md:rounded-2xl md:bg-[#111] overflow-hidden transition-colors md:hover:border-white/20 pb-2 md:pb-0">
-                <button 
+                <button
                   className="w-full flex items-center justify-between py-6 md:p-6 text-left"
                   onClick={() => setActiveFaq(activeFaq === index ? null : index)}
                 >
@@ -406,7 +471,7 @@ export default function LandingPage() {
                     {activeFaq === index ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
                   </div>
                 </button>
-                <div 
+                <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${activeFaq === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
                 >
                   <p className="px-0 md:px-6 pb-6 text-gray-400 text-sm md:text-sm leading-relaxed">
@@ -425,10 +490,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 mb-16">
             <div className="sm:col-span-2 lg:col-span-2">
               <Link href="/" className="flex items-center gap-2 mb-2 md:mb-6">
-                <img src="/scenio.png" alt="Scenio Logo" className="w-8 h-8 object-contain" />
+                <img src="/scenio.png" alt="Scenio Logo" className="w-7 h-7 object-contain" />
                 <span className="text-xl md:text-lg font-bold tracking-tight">Scenio.AI</span>
               </Link>
-              
+
               {/* Desktop Text */}
               <p className="hidden md:block text-gray-400 text-sm mb-6 max-w-xs">
                 The AI-native platform designed for storytellers to generate, edit, and orchestrate video projects.
@@ -441,7 +506,7 @@ export default function LandingPage() {
                 </p>
                 <div className="flex items-start gap-3 text-gray-400 text-sm mb-8 font-light">
                   <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                  <p>1209 Orange St, City of Wilmington,<br/>County of New Castle, Delaware 19801</p>
+                  <p>1209 Orange St, City of Wilmington,<br />County of New Castle, Delaware 19801</p>
                 </div>
                 <div className="flex items-center gap-6 text-white font-medium mb-12 text-sm">
                   <Link href="#" className="flex items-center gap-2 hover:text-gray-300">
@@ -452,12 +517,12 @@ export default function LandingPage() {
                     </svg>
                     LinkedIn
                   </Link>
-                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300"><MessageSquare className="w-5 h-5"/> Discord</Link>
-                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300"><Mail className="w-5 h-5"/> Mail Us</Link>
+                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300"><MessageSquare className="w-5 h-5" /> Discord</Link>
+                  <Link href="#" className="flex items-center gap-2 hover:text-gray-300"><Mail className="w-5 h-5" /> Mail Us</Link>
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-8 md:mt-0">
               <h4 className="font-bold text-lg md:font-semibold mb-6 md:mb-4 md:text-sm text-white">Product</h4>
               <ul className="space-y-5 md:space-y-3 text-sm md:text-sm text-gray-400">
