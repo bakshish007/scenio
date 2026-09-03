@@ -1,6 +1,8 @@
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Bug, Bell, Star, Menu, User } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { Bug, Bell, Star, Menu, User, Settings, LogOut } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
 
 interface TopbarProps {
   transparent?: boolean;
@@ -11,7 +13,20 @@ interface TopbarProps {
 
 export default function Topbar({ transparent = false, title, onMenuClick, showMenuButton = false }: TopbarProps) {
   const { data: session } = useSession();
+  const router = useRouter();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const hour = new Date().getHours();
   let greeting = 'Good evening';
   if (hour < 12) greeting = 'Good morning';
@@ -74,17 +89,51 @@ export default function Topbar({ transparent = false, title, onMenuClick, showMe
         </div>
 
         {session?.user && !transparent ? (
-          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity ml-1 sm:ml-2">
-            {session.user.image ? (
-              <img src={session.user.image} alt={session.user.name || "User"} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-white/10 shrink-0" />
-            ) : (
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white shrink-0 border border-white/10">
-                {userInitials}
+          <div className="relative" ref={dropdownRef}>
+            <div 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity ml-1 sm:ml-2"
+            >
+              {session.user.image ? (
+                <img src={session.user.image} alt={session.user.name || "User"} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-white/10 shrink-0" />
+              ) : (
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white shrink-0 border border-white/10">
+                  {userInitials}
+                </div>
+              )}
+              <span className="text-sm font-medium hidden md:block whitespace-nowrap">
+                {session.user.name || session.user.email?.split('@')[0]}
+              </span>
+            </div>
+
+            {/* Profile Dropdown */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-3 w-48 bg-[#111111] border border-[#333333] rounded-xl shadow-2xl py-1 z-50 overflow-hidden">
+                <div className="px-4 py-3 border-b border-[#222222]">
+                  <p className="text-sm font-medium text-white truncate">{session.user.name || 'User'}</p>
+                  <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                </div>
+                
+                <button 
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    router.push('/profile');
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-[#1a1a1a] transition-colors flex items-center gap-2 mt-1"
+                >
+                  <Settings className="w-4 h-4" />
+                  Edit Profile
+                </button>
+                
+                <button 
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-[#1a1a1a] transition-colors flex items-center gap-2 mb-1"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Log out
+                </button>
               </div>
             )}
-            <span className="text-sm font-medium hidden md:block whitespace-nowrap">
-              {session.user.name || session.user.email?.split('@')[0]}
-            </span>
           </div>
         ) : !transparent ? (
           <div className="flex items-center gap-2 cursor-pointer ml-1 sm:ml-2">
